@@ -1,3 +1,8 @@
+
+
+
+
+
 using Serilog;
 using Quartz;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -142,6 +147,16 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReact",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
@@ -157,9 +172,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseCors(x =>
+    x.AllowAnyHeader()
+     .AllowAnyMethod()
+     .AllowAnyOrigin());
 app.UseAuthentication();
-
+app.UseCors("AllowReact");
 app.UseAuthorization();
 app.UseSerilogRequestLogging();
 

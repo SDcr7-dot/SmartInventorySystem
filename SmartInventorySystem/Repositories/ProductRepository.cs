@@ -47,6 +47,7 @@ namespace SmartInventorySystem.Repositories
         public async Task<List<Product>> GetAllProductsEntity()
         {
             return await _context.Products
+                .Where(x => !x.IsDeleted)
                 .Include(x => x.Category)
                 .ToListAsync();
         }

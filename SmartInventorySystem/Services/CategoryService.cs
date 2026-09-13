@@ -23,4 +23,12 @@ public class CategoryService : ICategoryService
     {
         return await _repository.GetCategories();
     }
+    public async Task DeleteCategory(int id)
+    {
+        await _repository.DeleteCategory(id);
+    }
+    public async Task<Category> UpdateCategory(int id, Category category)
+    {
+        return await _repository.UpdateCategory(id, category);
+    }
 }

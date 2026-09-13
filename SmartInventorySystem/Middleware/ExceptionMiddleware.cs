@@ -1,7 +1,8 @@
-﻿namespace SmartInventorySystem.Middleware;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
-using Serilog;
+using SmartInventorySystem.Responses;
+
+namespace SmartInventorySystem.Middleware;
 
 public class ExceptionMiddleware
 {
@@ -20,17 +21,26 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            context.Response.ContentType = "application/json";
-            Log.Error(ex, ex.Message);
+            context.Response.ContentType =
+                "application/json";
 
-            var response = new
-            {
-                Success = false,
-                Message = ex.Message
-            };
+            context.Response.StatusCode =
+                (int)HttpStatusCode.InternalServerError;
 
-            var json = JsonSerializer.Serialize(response);
+            var response =
+                new ApiResponse<string>
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Errors = new List<string>
+                    {
+                        ex.InnerException?.Message
+                        ?? "No inner exception"
+                    }
+                };
+
+            var json =
+                JsonSerializer.Serialize(response);
 
             await context.Response.WriteAsync(json);
         }

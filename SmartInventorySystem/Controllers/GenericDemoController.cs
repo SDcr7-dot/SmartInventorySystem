@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartInventorySystem.Interfaces;
 using SmartInventorySystem.Services;
 
 namespace SmartInventorySystem.Controllers;
@@ -7,10 +8,10 @@ namespace SmartInventorySystem.Controllers;
 [ApiController]
 public class GenericDemoController : ControllerBase
 {
-    private readonly CategoryService _service;
+    private readonly ICategoryService _service;
 
     public GenericDemoController(
-        CategoryService service)
+        ICategoryService service)
     {
         _service = service;
     }

@@ -36,4 +36,28 @@ public class CategoryRepository : ICategoryRepository
     {
         return await _context.Categories.ToListAsync();
     }
+    public async Task DeleteCategory(int id)
+    {
+        var category = await _context.Categories.FindAsync(id);
+
+        if (category == null)
+            throw new Exception("Category not found");
+
+        _context.Categories.Remove(category);
+
+        await _context.SaveChangesAsync();
+    }
+    public async Task<Category> UpdateCategory(int id, Category category)
+    {
+        var existingCategory = await _context.Categories.FindAsync(id);
+
+        if (existingCategory == null)
+            throw new Exception("Category not found");
+
+        existingCategory.Name = category.Name;
+
+        await _context.SaveChangesAsync();
+
+        return existingCategory;
+    }
 }
